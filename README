@@ -1,0 +1,5 @@
+Thermal evolution code for Laneuville et al. (2015, in prep). Solves the heat conduction equation in
+a stably stratified layer.  The stratification is eroded with time and a local convection zone is
+created.
+
+More details to come...
