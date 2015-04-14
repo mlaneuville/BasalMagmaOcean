@@ -1,9 +1,7 @@
-
 #include "main.h"
 
 class Simulation
 {
-    double Tcore;
     // Working variables and output
     double frontCryst, oldCryst; // position of crystallization front as fractional index [-]
     double frontConv, oldConv; // position of convecting front as fractional index [-]
@@ -14,6 +12,7 @@ class Simulation
     double *Q; // current heat distribution [J/m3]
     double *Q2; // previous heat distribution [J/m3]
     double *K, *P, *S;
+    double Tcore;
 
     // getters
     double getS(int); // solidus temperature
@@ -31,8 +30,6 @@ class Simulation
     // fluxes tracking
     void updateHeat(void);
     void getHeatContent(void);
-
-
     
     // numerical scheme
     double gradTF(int);
@@ -61,10 +58,14 @@ double Simulation::getS(int x)
 // returns solidus temperature at cell x
 {
     double TA = 3500; // solidus temperature at the base of the BMO [K]
-    double TB = 4500; // solidus temperature at the top of the BMO [K]
-    double T = TB - (TB-TA)*(D-(x+1)*dx)/D;
-    if(x*dx>=D) return 5000; // the TBL starts solid, liquidus is irrelevant
-    return T - P[x]*(TB-TA)*dx/D;
+    double TB = 5500; // solidus temperature at the top of the BMO [K]
+
+    double c = c0 + dcomp*(D - x*dx); assert(c <= 1); assert(c >=0);
+    double T = TB - (TB-TA)*c;
+//    double T = TB - (TB-TA)*(D-(x+1)*dx)/D;
+    if(x*dx>=D) return 9999; // the TBL starts solid, liquidus is irrelevant
+//    return T - P[x]*(TB-TA)*dx/D;
+        return T - P[x]*dcomp*D*(TB-TA)*dx/D;
 }
 
 
@@ -97,9 +98,10 @@ double Simulation::getP(int x)
 
 double Simulation::func(double r)
 // frontCryst as a function of frontConv
-// this is derived analytically (C. manuscript)
+// this is derived analytically (cf. manuscript)
 // and is inverted to get frontConv knowing frontCryst.
 {
+    double drho = 1./dcomp;
     double B = eta*drho;
     double rtop = RC + D;
     double u, g;
@@ -332,10 +334,12 @@ void Simulation::initialize()
     P=(double*)malloc(XR*sizeof(double));
     S=(double*)malloc(XR*sizeof(double));
     
-    Tcore = 4500;
+    assert(c0 + D*dcomp <= 1.0);
+    Tcore = getS(D/dx-1);
+    
     frontCryst = XR; //getCrystallizationFront();
     frontConv = XR; //getConvectiveFront(frontCryst);
-    
+
     // isotherm at Tcore, gradient in TBL
     for (int x=0;x<XR;x++)
     {
@@ -384,12 +388,11 @@ void Simulation::run()
         updateHeat();
         time += dt;
      
-        if (bdyMoved)
+        if (bdyMoved or time == dt)
         {
             getHeatContent();
             
             if (time == 0) time = 1;
-            assert(Qtop >= 0);
 
             FILE *g = fopen("timeseries.txt", "a");
             fprintf(g, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g\n",
@@ -407,6 +410,7 @@ void Simulation::run()
             Qcmb = 0;
             Qtop = 0;
             bdyMoved = 0;
+            assert(Qtop >= 0);
         }
         
         if (time >= snap*(1+lastOut))

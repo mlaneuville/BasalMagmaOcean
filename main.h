@@ -18,7 +18,7 @@ static const double Ma = 1e6*years;
 // Model geometry
 static const double RC = 3480e3; // Core Radius [m]
 static const double VC = 4*PI*pow(RC,3)/3; // Core Volume [m3]
-static const double D = 200e3; // BMO thickness [m]
+static const double D = 1000e3; // BMO thickness [m]
 static const double dx = 1.0e3; // Grid resolution [m]
 static const double delta = 100e3; // Mantle thermal boundary layer (TBL) [m]
 static const double CMB = 25e3; // CMB thermal boundary layer thickness [m]
@@ -36,18 +36,16 @@ static const double C = rho*1000; // specific heat [J/K/m3]
 static const double alpha = 2e-5; // thermal expansivity [/K]
 static const double g = 11.0; // CMB gravity [m/s2]
     
-/* @TODO: input should be in kg/m3/km and implications should be
-          dealt with in func() and getS(). */
-static const double drho = 2.5e6; // "density" gradient in the BMO [m/wt.%]
-                     // drho = D/dc, where dc is the compo difference
-                     // between bottom and top of the BMO
+// Compositional gradient definition
+static const double c0 = 0.3; // iron content at the top of the layer at t=0 [wt.%]
+static const double dcomp = 4e-7; // composition gradient [wt.%/m]
 static const double eta = 0.088;  // Fe partitioning upon crystallization [wt.%]
 
 // Numerical variables
 static const double tmax = 1000*Ma; // max simulation time [Ma]
 static const double snap = 0.1*Ma; // snapshot frequency [Ma]
 
-// initial conditinos
+// initial conditions
 static const double TMantle = 2500; // initial mantle temperature [K]
 
 static const double dt = 0.25*dx*dx/KTC; // simulation timestep [s]
