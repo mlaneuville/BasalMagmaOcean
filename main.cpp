@@ -1,58 +1,9 @@
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <string>
-#include <fstream>
 
-#include <cmath>
-#include <cassert>
-
-using namespace std;
+#include "main.h"
 
 class Simulation
 {
-    // useful declarations
-    double PI = 3.14159265359;
-    double years = 365*24*3600;
-    double Ma = 1e6*years;
-
-    // Model geometry
-    double RC = 3480e3; // Core Radius [m]
-    double VC = 4*PI*pow(RC,3)/3; // Core Volume [m3]
-    double D = 200e3; // BMO thickness [m]
-    double dx = 1.0e3; // Grid resolution [m]
-    double delta = 100e3; // Mantle thermal boundary layer (TBL) [m]
-    double CMB = 25e3; // CMB thermal boundary layer thickness [m]
-    
-    int TBL = delta/dx; // number of cells in TBL [-]
-    int XR = (D+delta)/dx; // total number of cells [-]
-
-    // Thermo-chemical properties
-    double KTL = 1e-5; // Liquid diffusivity [m2/s]
-    double KTM = 2e-6; // Mantle diffusivity through TBL [m2/s]
-    double KTC = 1e-3; // Convecting mantle effective diffusivity [m2/s]
-    double rho = 5000; // average BMO density [kg/m3]
-    double Qlatent = rho*5000*300; // latent heat of crystallization [J/m3]
-    double C = rho*1000; // specific heat [J/K/m3]
-    double alpha = 2e-5; // thermal expansivity [/K]
-    double g = 11.0; // CMB gravity [m/s2]
-    
-    /* @TODO: input should be in kg/m3/km and implications should be
-              dealt with in func() and getS(). */
-    double drho = 2.5e6; // "density" gradient in the BMO [m/wt.%]
-                         // drho = D/dc, where dc is the compo difference
-                         // between bottom and top of the BMO
-    double eta = 0.088;  // Fe partitioning upon crystallization [wt.%]
-    
-    // Numerical variables
-    double tmax = 150*Ma; // max simulation time [Ma]
-    double snap = 0.1*Ma; // snapshot frequency [Ma]
-    double dt = 0.25*dx*dx/KTC; // simulation timestep [s]
-
-    // initial conditinos
-    double Tcore = 4500; // initial core temperature [K]
-    double TMantle = 2500; // initial mantle temperature [K]
-
+    double Tcore;
     // Working variables and output
     double frontCryst, oldCryst; // position of crystallization front as fractional index [-]
     double frontConv, oldConv; // position of convecting front as fractional index [-]
@@ -381,6 +332,7 @@ void Simulation::initialize()
     P=(double*)malloc(XR*sizeof(double));
     S=(double*)malloc(XR*sizeof(double));
     
+    Tcore = 4500;
     frontCryst = XR; //getCrystallizationFront();
     frontConv = XR; //getConvectiveFront(frontCryst);
     
