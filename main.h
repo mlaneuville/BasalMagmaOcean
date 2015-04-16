@@ -38,6 +38,7 @@ static const double g = 11.0; // CMB gravity [m/s2]
     
 // Compositional gradient definition
 static const double dcomp = 4e-7; // composition gradient [wt.%/m]
+static const double drho = 6e3; // density gradient [kg/m3/wt.%] - no need to change this
 static const double eta = 0.088;  // Fe partitioning upon crystallization [wt.%]
 
 // Numerical variables

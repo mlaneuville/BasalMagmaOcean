@@ -221,6 +221,8 @@ void Simulation::getHeatContent(void)
     
     for(int i=0; i<XR; i++)
     {
+        double stability = 0.5*(gradTF(i)+gradTB(i))*dx*alpha*rho - drho*dcomp*dx;
+        if (stability > 0 and i < frontCryst) cout << i << " should convect..." << endl;
         nQlat += 4*PI*pow(RC+i*dx,2)*dx*Qlatent*(1-P[i]); // J
         nQsec += 4*PI*pow(RC+i*dx,2)*dx*(getT(i)-S[i])*C*(1-P[i]); // J
     }
