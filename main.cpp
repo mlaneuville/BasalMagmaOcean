@@ -20,7 +20,8 @@ class Simulation
     double getP(int); // solid fraction
     double getK(int); // diffusivity
     double getC(int); // specific heat
-
+    double getRadio(double); // heat production rate in w/kg
+    
     // boundary tracking
     double func(double);
     double bissect(double);
@@ -38,7 +39,7 @@ class Simulation
     
     // logic
     void initialize(void);
-    void iterate(void);
+    void iterate(double);
 
 public:
     void run();
@@ -53,6 +54,18 @@ int bdyMoved = 1;
 /*--------------------------------------------------------------------------------
  ----------------------------------------------------------------------------------
  --------------------------------------------------------------------------------*/
+
+double Simulation::getRadio(double time)
+// input time is in s after 4.5 Ga ago
+// returns production rate in W/kg
+{
+    double t = 4.5e9 - time/3600./24/365;
+    double H = 0.9928*CU0*HU238*exp(t*log(2.)/tU238);
+    H += 0.0071*CU0*HU235*exp(t*log(2.)/tU235);
+    H += CTh0*HTh232*exp(t*log(2.)/tTh232);
+    H += 1.19e-4*CK0*HK40*exp(t*log(2.)/tK40);
+    return H;
+}
 
 double Simulation::getS(int x)
 // returns solidus temperature at cell x
@@ -295,7 +308,7 @@ double Simulation::ThermalDiffusion(int x)
 //    return (qw*pow(rw,2) - qe*pow(re,2))/dx/pow(r,2) + (fw*pow(rw,2) - fe*pow(re,2))/dx/pow(r,2);
 }
 
-void Simulation::iterate()
+void Simulation::iterate(double time)
 {
     double *buf;
     double dQ;
@@ -310,7 +323,7 @@ void Simulation::iterate()
     
     for (int x=0;x<XR;x++)
     {
-        dQ = dt*ThermalDiffusion(x)*getC(x);
+        dQ = dt*ThermalDiffusion(x)*getC(x) + dt*rho*getRadio(time);
         assert(! isnan(dQ));
 
         Q2[x] = Q[x] + dQ;
@@ -384,25 +397,27 @@ void Simulation::run()
     
     while (time < tmax)
     {
-        iterate();
+        iterate(time);
         updateHeat();
         time += dt;
      
         if (bdyMoved or time == dt)
         {
             getHeatContent();
+            double massBMO = 4*PI*rho*(pow(RC+dx*frontCryst,3) - pow(RC,3))/3;
             
             if (time == 0) time = 1;
 
             FILE *g = fopen("timeseries.txt", "a");
-            fprintf(g, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g\n",
+            fprintf(g, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g\n",
                     time/Ma,
                     (RC+dx*frontCryst)/1e3,
                     (RC+dx*frontConv)/1e3,
                     Qcmb/(time-lastTime)/1e12,
                     Qtop/(time-lastTime)/1e12,
                     (oQsec-nQsec)/(time-oldtime)/1e12,
-                    (oQlat-nQlat)/(time-oldtime)/1e12);
+                    (oQlat-nQlat)/(time-oldtime)/1e12,
+                    getRadio(time)*massBMO/1e12);
             fclose(g);
             lastTime = time;
             oldtime = time;

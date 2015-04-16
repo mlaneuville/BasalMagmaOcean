@@ -37,17 +37,32 @@ static const double alpha = 2e-5; // thermal expansivity [/K]
 static const double g = 11.0; // CMB gravity [m/s2]
     
 // Compositional gradient definition
-static const double c0 = 0.3; // iron content at the top of the layer at t=0 [wt.%]
 static const double dcomp = 4e-7; // composition gradient [wt.%/m]
 static const double eta = 0.088;  // Fe partitioning upon crystallization [wt.%]
 
 // Numerical variables
 static const double tmax = 1000*Ma; // max simulation time [Ma]
 static const double snap = 0.1*Ma; // snapshot frequency [Ma]
+static const double dt = 0.25*dx*dx/KTC; // simulation timestep [s]
 
 // initial conditions
 static const double TMantle = 2500; // initial mantle temperature [K]
+static const double c0 = 0.3; // iron content at the top of the layer at t=0 [wt.%]
 
-static const double dt = 0.25*dx*dx/KTC; // simulation timestep [s]
+// Specific heat production rate [W/kg]
+static const double HU238 = 9.46e-5;
+static const double HU235 = 5.69e-4;
+static const double HTh232 = 2.64e-5;
+static const double HK40 = 2.92e-5;
 
+// Half life of the isotope [a]
+static const double tU238 = 4.47e9;
+static const double tU235 = 7.04e8;
+static const double tTh232 = 1.40e10;
+static const double tK40 = 1.25e9;
+
+// Initial concentrations
+static const double CU0 = 20.3e-9;
+static const double CTh0 = 79.5e-9;
+static const double CK0 = 240e-6;
 
