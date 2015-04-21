@@ -7,3 +7,8 @@ a.out: main.h main.cpp
 	@echo "string revision = \"$(REV)\";" > revision.h
 	g++ -O3 main.cpp
 	@rm -rf revision.h
+
+clean:
+	rm -rf *.txt
+	rm -rf *.log
+	rm -rf a.out
