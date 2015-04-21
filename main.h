@@ -43,7 +43,7 @@ static const double eta = 0.088;  // Fe partitioning upon crystallization [wt.%]
 
 // Numerical variables
 static const double tmax = 1000*Ma; // max simulation time [Ma]
-static const double snap = 0.1*Ma; // snapshot frequency [Ma]
+static const double snap = 1*Ma; // snapshot frequency [Ma]
 static const double dt = 0.25*dx*dx/KTC; // simulation timestep [s]
 
 // initial conditions

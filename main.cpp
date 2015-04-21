@@ -468,6 +468,18 @@ void Simulation::printInfo(void)
     logfile << "ncells = " << XR << endl;
     logfile << endl;
     
+    logfile << "KTL = " << KTL << endl;
+    logfile << "KTM = " << KTM << endl;
+    logfile << "KTC = " << KTC << endl;
+    logfile << "rho = " << rho << endl;
+    logfile << "Qlatent = " << Qlatent << endl;
+    logfile << "C = " << C << endl;
+    logfile << "alpha = " << alpha << endl;
+    logfile << "g = " << g << endl;
+    logfile << "dcomp = " << dcomp << endl;
+    logfile << "drho = " << drho << endl;
+    logfile << "eta = " << eta << endl;
+    
     logfile.close();
 }
 
