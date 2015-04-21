@@ -41,9 +41,12 @@ class Simulation
     // logic
     void initialize(void);
     void iterate(double);
+    void printInfo(void);
 
+    
 public:
     void run();
+
 
 };
 
@@ -51,6 +54,8 @@ double lastTime = 0;
 bool finished = false;
 int lastBdy = 100000;
 int bdyMoved = 1;
+
+string fname1, fname2, fname3;
 
 /*--------------------------------------------------------------------------------
  ----------------------------------------------------------------------------------
@@ -380,15 +385,7 @@ void Simulation::initialize()
     oldConv = frontConv;
     oldCryst = frontCryst;
     
-    cout << "revision = " << revision << endl;
-    cout << "dx = " << dx << " m" << endl;
-    cout << "dt = " << dt/Ma << " Ma" << endl;
-    cout << "N-factor = " << snap/dt << " (n-timesteps per snapshots)" << endl;
-    cout << "tmax = " << tmax/Ma << " Ma" << endl;
-    cout << "nsteps = " << ceil(tmax/dt) << endl;
-    cout << "ncells = " << XR << endl;
-    cout << endl;
-
+    printInfo();
 }
 
 void Simulation::run()
@@ -412,7 +409,7 @@ void Simulation::run()
             
             if (time == 0) time = 1;
 
-            FILE *g = fopen("timeseries.txt", "a");
+            FILE *g = fopen(fname3.c_str(), "a");
             fprintf(g, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g\n",
                     time/Ma,
                     (RC+dx*frontCryst)/1e3,
@@ -434,8 +431,12 @@ void Simulation::run()
         
         if (time >= snap*(1+lastOut))
         {
-            cout << "t = " << setprecision(4) << time/Ma << " Ma" << endl;
-            FILE *f = fopen("record.txt", "a");
+            ofstream logfile;
+            logfile.open (fname1.c_str(), ios::app);
+            logfile << "t = " << setprecision(4) << time/Ma << " Ma" << endl;
+            logfile.close();
+            
+            FILE *f = fopen(fname2.c_str(), "a");
             for (int x=0;x<XR;x++)
             fprintf(f, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g\n",
                     (RC+x*dx)/1e3,
@@ -453,8 +454,31 @@ void Simulation::run()
     }
 }
 
+void Simulation::printInfo(void)
+{
+    ofstream logfile;
+    logfile.open (fname1.c_str());
+    
+    logfile << "revision = " << revision << endl;
+    logfile << "dx = " << dx << " m" << endl;
+    logfile << "dt = " << dt/Ma << " Ma" << endl;
+    logfile << "N-factor = " << snap/dt << " (n-timesteps per snapshots)" << endl;
+    logfile << "tmax = " << tmax/Ma << " Ma" << endl;
+    logfile << "nsteps = " << ceil(tmax/dt) << endl;
+    logfile << "ncells = " << XR << endl;
+    logfile << endl;
+    
+    logfile.close();
+}
+
 int main(int argc, char **argv)
 {
+    if (argc != 2) {cout << "Run name required." << endl; exit(1);}
+
+    fname1 = string(argv[1]) + string(".log");
+    fname2 = string(argv[1]) + string("-record.txt");
+    fname3 = string(argv[1]) + string("-timeseries.txt");
+    
     Simulation s;
     s.run();
 }
