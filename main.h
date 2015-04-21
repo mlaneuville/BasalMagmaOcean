@@ -11,7 +11,7 @@
 using namespace std;
 
 // useful declarations
-static const double PI = 3.15;
+static const double PI = 3.14159265359;
 static const double years = 365*24*3600;
 static const double Ma = 1e6*years;
 

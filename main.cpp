@@ -1,4 +1,5 @@
 #include "main.h"
+#include "revision.h"
 
 class Simulation
 {
@@ -379,6 +380,7 @@ void Simulation::initialize()
     oldConv = frontConv;
     oldCryst = frontCryst;
     
+    cout << "revision = " << revision << endl;
     cout << "dx = " << dx << " m" << endl;
     cout << "dt = " << dt/Ma << " Ma" << endl;
     cout << "N-factor = " << snap/dt << " (n-timesteps per snapshots)" << endl;
