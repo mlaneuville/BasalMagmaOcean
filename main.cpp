@@ -396,7 +396,7 @@ void Simulation::run()
     double oldtime = 0;
     int lastOut = 0;
     
-    while (time < tmax)
+    while (time < tmax and frontCryst >= frontConv)
     {
         iterate(time);
         updateHeat();
