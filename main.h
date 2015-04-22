@@ -18,7 +18,7 @@ static const double Ma = 1e6*years;
 // Model geometry
 static const double RC = 3480e3; // Core Radius [m]
 static const double VC = 4*PI*pow(RC,3)/3; // Core Volume [m3]
-static const double D = 1000e3; // BMO thickness [m]
+static const double D = 600e3; // BMO thickness [m]
 static const double dx = 1.0e3; // Grid resolution [m]
 static const double delta = 100e3; // Mantle thermal boundary layer (TBL) [m]
 static const double CMB = 25e3; // CMB thermal boundary layer thickness [m]

@@ -285,7 +285,7 @@ double Simulation::ThermalDiffusion(int x)
     double Tx = getT(x);
     
     // within convective zone of the BMO, should be KTS
-    if ((x <= floor(frontCryst)) && (x > ceil(frontConv)))
+    if ((x <= floor(frontCryst) - 5) && (x > ceil(frontConv)) + 5)
     {
         
         double cp = 1000;
