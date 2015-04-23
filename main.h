@@ -42,11 +42,12 @@ static const double drho = 6e3; // density gradient [kg/m3/wt.%] - no need to ch
 static const double eta = 0.088;  // Fe partitioning upon crystallization [wt.%]
 
 // Numerical variables
-static const double tmax = 1000*Ma; // max simulation time [Ma]
+static const double tmax = 4500*Ma; // max simulation time [Ma]
 static const double snap = 1*Ma; // snapshot frequency [Ma]
 static const double dt = 0.25*dx*dx/KTC; // simulation timestep [s]
 
 // initial conditions
+static const double dT0 = 1.; // initial temperature gradient in BMO [K/km]
 static const double TMantle = 2500; // initial mantle temperature [K]
 static const double c0 = 0.3; // iron content at the top of the layer at t=0 [wt.%]
 

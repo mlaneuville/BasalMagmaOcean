@@ -356,7 +356,7 @@ void Simulation::initialize()
     S=(double*)malloc(XR*sizeof(double));
     
     assert(c0 + D*dcomp <= 1.0);
-    Tcore = getS(D/dx-1);
+    Tcore = getS(D/dx-1)+ dT0*D/1000.; // 1 K / km of initial gradient
     
     frontCryst = XR; //getCrystallizationFront();
     frontConv = XR; //getConvectiveFront(frontCryst);
@@ -368,7 +368,7 @@ void Simulation::initialize()
         
         if(x*dx < D)
         {
-            Q[x] = C*S[x] + Qlatent + (Tcore-S[x])*C;
+            Q[x] = C*S[x] + Qlatent + (Tcore-S[x]-dT0)*C; // 1K/km of initial gradient
         } else {
             Q[x] = C*(Tcore - (x*dx-D)*(Tcore-TMantle)/delta);
         }
