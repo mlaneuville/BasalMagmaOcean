@@ -18,7 +18,7 @@ static const double Ma = 1e6*years;
 // Model geometry
 static const double RC = 3480e3; // Core Radius [m]
 static const double VC = 4*PI*pow(RC,3)/3; // Core Volume [m3]
-static const double D = 600e3; // BMO thickness [m]
+static const double D = 200e3; // BMO thickness [m]
 static const double dx = 1.0e3; // Grid resolution [m]
 static const double delta = 100e3; // Mantle thermal boundary layer (TBL) [m]
 static const double CMB = 25e3; // CMB thermal boundary layer thickness [m]
@@ -47,7 +47,8 @@ static const double snap = 1*Ma; // snapshot frequency [Ma]
 static const double dt = 0.25*dx*dx/KTC; // simulation timestep [s]
 
 // initial conditions
-static const double dT0 = 1.; // initial temperature gradient in BMO [K/km]
+static const bool conserveHeat = true;
+static const double dT0 = 0.; // initial temperature gradient in BMO [K/km]
 static const double TMantle = 2500; // initial mantle temperature [K]
 static const double c0 = 0.3; // iron content at the top of the layer at t=0 [wt.%]
 

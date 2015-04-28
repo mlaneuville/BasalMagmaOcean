@@ -70,7 +70,12 @@ double Simulation::getRadio(double time)
     H += 0.0071*CU0*HU235*exp(t*log(2.)/tU235);
     H += CTh0*HTh232*exp(t*log(2.)/tTh232);
     H += 1.19e-4*CK0*HK40*exp(t*log(2.)/tK40);
-    return H;
+	double prefactor = 1;
+	if (conserveHeat == true)
+	{
+		prefactor = (pow(RC+D,3)-pow(RC,3))/(pow(RC+frontCryst*dx,3)-pow(RC,3));
+	}
+    return prefactor*H;
 }
 
 double Simulation::getS(int x)
