@@ -48,7 +48,7 @@ static const double dt = 0.25*dx*dx/KTC; // simulation timestep [s]
 
 // initial conditions
 static const bool conserveHeat = true;
-static const double dT0 = 0.; // initial temperature gradient in BMO [K/km]
+static const double dT0 = 1.; // initial temperature gradient in BMO [K/km]
 static const double TMantle = 2500; // initial mantle temperature [K]
 static const double c0 = 0.3; // iron content at the top of the layer at t=0 [wt.%]
 

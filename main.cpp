@@ -373,7 +373,7 @@ void Simulation::initialize()
         
         if(x*dx < D)
         {
-            Q[x] = C*S[x] + Qlatent + (Tcore-S[x]-dT0)*C; // 1K/km of initial gradient
+            Q[x] = C*S[x] + Qlatent + (Tcore-S[x]-dT0*x)*C; // 1K/km of initial gradient
         } else {
             Q[x] = C*(Tcore - (x*dx-D)*(Tcore-TMantle)/delta);
         }
