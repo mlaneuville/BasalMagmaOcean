@@ -18,7 +18,7 @@ static const double Ma = 1e6*years;
 // Model geometry
 static const double RC = 3480e3; // Core Radius [m]
 static const double VC = 4*PI*pow(RC,3)/3; // Core Volume [m3]
-static const double D = 200e3; // BMO thickness [m]
+static const double D = 500e3; // BMO thickness [m]
 static const double dx = 1.0e3; // Grid resolution [m]
 static const double delta = 100e3; // Mantle thermal boundary layer (TBL) [m]
 static const double CMB = 25e3; // CMB thermal boundary layer thickness [m]
@@ -51,6 +51,8 @@ static const bool conserveHeat = true;
 static const double dT0 = 1.; // initial temperature gradient in BMO [K/km]
 static const double TMantle = 2500; // initial mantle temperature [K]
 static const double c0 = 0.3; // iron content at the top of the layer at t=0 [wt.%]
+static const double TL0 = 4500.; // liquidus at the top of the layer [K]
+static const double liquidusDrop = 1000.; // total liquidus drop over the layer [K]
 
 // Specific heat production rate [W/kg]
 static const double HU238 = 9.46e-5;

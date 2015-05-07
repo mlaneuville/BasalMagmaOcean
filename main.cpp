@@ -81,15 +81,9 @@ double Simulation::getRadio(double time)
 double Simulation::getS(int x)
 // returns solidus temperature at cell x
 {
-    double TA = 3500; // solidus temperature at the base of the BMO [K]
-    double TB = 5500; // solidus temperature at the top of the BMO [K]
-
-    double c = c0 + dcomp*(D - x*dx); assert(c <= 1); assert(c >=0);
-    double T = TB - (TB-TA)*c;
-//    double T = TB - (TB-TA)*(D-(x+1)*dx)/D;
+    double T = TL0 - liquidusDrop*(D-x*dx)/D;
     if(x*dx>=D) return 9999; // the TBL starts solid, liquidus is irrelevant
-//    return T - P[x]*(TB-TA)*dx/D;
-        return T - P[x]*dcomp*D*(TB-TA)*dx/D;
+    return T - P[x]*liquidusDrop*dx/D;
 }
 
 
@@ -232,6 +226,7 @@ void Simulation::getHeatContent(void)
     
     for(int i=0; i<XR; i++)
     {
+        // TODO check stability criterium and exit
         double stability = 0.5*(gradTF(i)+gradTB(i))*dx*alpha*rho - drho*dcomp*dx;
         if (stability > 0 and i < frontCryst) cout << i << " should convect..." << endl;
         nQlat += 4*PI*pow(RC+i*dx,2)*dx*Qlatent*(1-P[i]); // J
@@ -361,8 +356,8 @@ void Simulation::initialize()
     S=(double*)malloc(XR*sizeof(double));
     
     assert(c0 + D*dcomp <= 1.0);
-    Tcore = getS(D/dx-1)+ dT0*D/1000.; // 1 K / km of initial gradient
-    
+    Tcore = TL0 + dT0*D/1000.; // 1 K / km of initial gradient
+
     frontCryst = XR; //getCrystallizationFront();
     frontConv = XR; //getConvectiveFront(frontCryst);
 
