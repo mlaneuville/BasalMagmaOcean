@@ -37,9 +37,9 @@ static const double alpha = 2e-5; // thermal expansivity [/K]
 static const double g = 11.0; // CMB gravity [m/s2]
     
 // Compositional gradient definition
-static const double dcomp = 4e-7; // composition gradient [wt.%/m]
 static const double drho = 6e3; // density gradient [kg/m3/wt.%] - no need to change this
 static const double eta = 0.088;  // Fe partitioning upon crystallization [wt.%]
+static const double densityDrop = 1200; // total density drop over the layer [kg/m3]
 
 // Numerical variables
 static const double tmax = 4500*Ma; // max simulation time [Ma]
@@ -50,7 +50,6 @@ static const double dt = 0.25*dx*dx/KTC; // simulation timestep [s]
 static const bool conserveHeat = true;
 static const double dT0 = 1.; // initial temperature gradient in BMO [K/km]
 static const double TMantle = 2500; // initial mantle temperature [K]
-static const double c0 = 0.3; // iron content at the top of the layer at t=0 [wt.%]
 static const double TL0 = 4500.; // liquidus at the top of the layer [K]
 static const double liquidusDrop = 1000.; // total liquidus drop over the layer [K]
 

@@ -119,8 +119,8 @@ double Simulation::func(double r)
 // this is derived analytically (cf. manuscript)
 // and is inverted to get frontConv knowing frontCryst.
 {
-    double drho = 1./dcomp;
-    double B = eta*drho;
+    double s = densityDrop/drho/D; // [wt.%/m]
+    double B = eta/s;
     double rtop = RC + D;
     double u, g;
     
@@ -355,7 +355,6 @@ void Simulation::initialize()
     P=(double*)malloc(XR*sizeof(double));
     S=(double*)malloc(XR*sizeof(double));
     
-    assert(c0 + D*dcomp <= 1.0);
     Tcore = TL0 + dT0*D/1000.; // 1 K / km of initial gradient
 
     frontCryst = XR; //getCrystallizationFront();
