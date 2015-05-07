@@ -226,9 +226,15 @@ void Simulation::getHeatContent(void)
     
     for(int i=0; i<XR; i++)
     {
-        // TODO check stability criterium and exit
-        double stability = 0.5*(gradTF(i)+gradTB(i))*dx*alpha*rho - drho*dcomp*dx;
-        if (stability > 0 and i < frontCryst) cout << i << " should convect..." << endl;
+        double stability = 0.5*(gradTF(i)+gradTB(i))*alpha*rho - densityDrop/D*dx;
+        if (stability > 0 and i < frontCryst)
+        {
+            ofstream logfile;
+            logfile.open (fname1.c_str());
+            logfile << i << " should convect..." << endl;
+            logfile.close();
+        }
+        
         nQlat += 4*PI*pow(RC+i*dx,2)*dx*Qlatent*(1-P[i]); // J
         nQsec += 4*PI*pow(RC+i*dx,2)*dx*(getT(i)-S[i])*C*(1-P[i]); // J
     }
@@ -475,9 +481,13 @@ void Simulation::printInfo(void)
     logfile << "C = " << C << endl;
     logfile << "alpha = " << alpha << endl;
     logfile << "g = " << g << endl;
-    logfile << "dcomp = " << dcomp << endl;
     logfile << "drho = " << drho << endl;
+    logfile << "densityDrop = " << densityDrop << endl;
+    logfile << "liquidusDrop = " << liquidusDrop << endl;
     logfile << "eta = " << eta << endl;
+    logfile << "dT0 = " << dT0 << endl;
+    logfile << "TMantle = " << TMantle << endl;
+    logfile << "TL0 = " << TL0 << endl;
     
     logfile.close();
 }
