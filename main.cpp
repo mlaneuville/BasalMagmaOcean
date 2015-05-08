@@ -50,6 +50,13 @@ public:
 
 };
 
+// default
+double D = 4000e3;
+double densityDrop = 1000;
+double liquidusDrop = 1000;
+
+int XR = (D+delta)/dx;
+
 double lastTime = 0;
 bool finished = false;
 int lastBdy = 100000;
@@ -494,11 +501,20 @@ void Simulation::printInfo(void)
 
 int main(int argc, char **argv)
 {
-    if (argc != 2) {cout << "Run name required." << endl; exit(1);}
+    if (argc != 4) {cout << "Wrong number of arguments!" << endl; exit(1);}
 
-    fname1 = string(argv[1]) + string(".log");
-    fname2 = string(argv[1]) + string("-record.txt");
-    fname3 = string(argv[1]) + string("-timeseries.txt");
+	D = atof(argv[1])*1000;
+	liquidusDrop = atof(argv[2]);
+	densityDrop = atof(argv[3]);
+	XR = (D+delta)/dx;
+
+	ostringstream str; 
+	str << "D" << D/1000 << "L" << liquidusDrop << "R" << densityDrop;
+	string prepend = str.str();
+
+    fname1 = prepend + string(".log");
+    fname2 = prepend + string("-record.txt");
+    fname3 = prepend + string("-timeseries.txt");
     
     Simulation s;
     s.run();

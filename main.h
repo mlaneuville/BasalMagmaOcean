@@ -18,13 +18,11 @@ static const double Ma = 1e6*years;
 // Model geometry
 static const double RC = 3480e3; // Core Radius [m]
 static const double VC = 4*PI*pow(RC,3)/3; // Core Volume [m3]
-static const double D = 500e3; // BMO thickness [m]
 static const double dx = 1.0e3; // Grid resolution [m]
 static const double delta = 100e3; // Mantle thermal boundary layer (TBL) [m]
 static const double CMB = 25e3; // CMB thermal boundary layer thickness [m]
 
 static const int TBL = delta/dx; // number of cells in TBL [-]
-static const int XR = (D+delta)/dx; // total number of cells [-]
 
 // Thermo-chemical properties
 static const double KTL = 1e-5; // Liquid diffusivity [m2/s]
@@ -39,7 +37,6 @@ static const double g = 11.0; // CMB gravity [m/s2]
 // Compositional gradient definition
 static const double drho = 6e3; // density gradient [kg/m3/wt.%] - no need to change this
 static const double eta = 0.088;  // Fe partitioning upon crystallization [wt.%]
-static const double densityDrop = 1200; // total density drop over the layer [kg/m3]
 
 // Numerical variables
 static const double tmax = 4500*Ma; // max simulation time [Ma]
@@ -51,7 +48,7 @@ static const bool conserveHeat = true;
 static const double dT0 = 1.; // initial temperature gradient in BMO [K/km]
 static const double TMantle = 2500; // initial mantle temperature [K]
 static const double TL0 = 4500.; // liquidus at the top of the layer [K]
-static const double liquidusDrop = 1000.; // total liquidus drop over the layer [K]
+//static const double liquidusDrop = 1000.; // total liquidus drop over the layer [K]
 
 // Specific heat production rate [W/kg]
 static const double HU238 = 9.46e-5;
