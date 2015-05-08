@@ -1,11 +1,12 @@
 #!/bin/bash
 
 REV = $(shell git rev-parse --verify HEAD)
+CC = g++
 
 a.out: main.h main.cpp
 	@rm -rf revision.h
 	@echo "string revision = \"$(REV)\";" > revision.h
-	g++ -O3 main.cpp
+	$(CC) -O3 -ffast-math main.cpp
 	@rm -rf revision.h
 
 clean:
