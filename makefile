@@ -6,7 +6,7 @@ CC = g++
 a.out: main.h main.cpp
 	@rm -rf revision.h
 	@echo "string revision = \"$(REV)\";" > revision.h
-	$(CC) -O3 -ffast-math main.cpp
+	$(CC) -O3 -g -ffast-math main.cpp
 	@rm -rf revision.h
 
 clean:
