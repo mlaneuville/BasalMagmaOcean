@@ -33,7 +33,7 @@ while 1 do
 	else
 		pid = wait()
 		puts ""
-		puts "-- %05d finished" % pid
+		puts "%s -- %05d finished" % [Time.now, pid]
 		pids.delete_if{|p| p == pid}
 	end
 end
