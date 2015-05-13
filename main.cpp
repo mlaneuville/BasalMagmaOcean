@@ -89,7 +89,12 @@ double Simulation::getS(int x)
 // returns solidus temperature at cell x
 {
     double T = TL0 - liquidusDrop*(D-x*dx)/D;
-    if(x*dx>=D) return 9999; // the TBL starts solid, liquidus is irrelevant
+
+	// the TBL starts solid, liquidus is irrelevant
+    if(x*dx >= D) return 9999; 
+	// the convection zone has the same liquidus as its lowermost point
+    if(x > frontConv) return TL0 - liquidusDrop*(D-frontConv*dx)/D;
+
     return T - P[x]*liquidusDrop*dx/D;
 }
 
@@ -332,7 +337,7 @@ double Simulation::ThermalDiffusion(int x)
 void Simulation::iterate(double time)
 {
     double *buf;
-    double dQ;
+    double dQ, S0;
     
     oldCryst = frontCryst;
     frontCryst = getCrystallizationFront();
@@ -350,7 +355,11 @@ void Simulation::iterate(double time)
         Q2[x] = Q[x] + dQ;
         K[x] = getK(x);
         P[x] = getP(x);
+		S0 = S[x];
         S[x] = getS(x);
+		// artificial change of liquidus with time needs to be taken into
+		// account to keep energy balance consistent
+        nQsec += 4*PI*pow(RC+x*dx,2)*dx*(S0-S[x])*C*(1-P[x]); // J
     }
     
     Tcore = Tcore - 3/RC*KTL*dt*(Tcore-getT(0))/dx; // W/m3 * s * W/m/K
