@@ -13,7 +13,7 @@ class Simulation
     double *Q; // current heat distribution [J/m3]
     double *Q2; // previous heat distribution [J/m3]
     double *K, *P, *S;
-    double Tcore;
+    double Tcore, liquidEnrichment;
 
     // getters
     double getS(int); // solidus temperature
@@ -61,6 +61,7 @@ double lastTime = 0;
 bool finished = false;
 int lastBdy = 100000;
 int bdyMoved = 1;
+bool endProg = false;
 
 string fname1, fname2, fname3;
 
@@ -89,11 +90,24 @@ double Simulation::getS(int x)
 // returns solidus temperature at cell x
 {
     double T = TL0 - liquidusDrop*(D-x*dx)/D;
+	double gradTL = 1000; // K between c=0 and c=1 (assumption for test purposes, check later)
+	double dc = 0.0;
+
+	if(x < int(CMB/dx)) return 0.0;
+
+	if(frontConv == int(CMB/dx) and x == 0) // this should be done only once per timestep
+	{
+		dc = 3*pow(RC+frontCryst*dx,2)*eta*(oldCryst-frontCryst)*dx;
+		dc /= (pow(RC+frontCryst*dx,3)-pow(RC+frontConv*dx,3));
+		liquidEnrichment += dc;
+		if(liquidEnrichment > 0.5) liquidEnrichment = 0.5;
+	}
 
 	// the TBL starts solid, liquidus is irrelevant
     if(x*dx >= D) return 9999; 
+
 	// the convection zone has the same liquidus as its lowermost point
-    if(x > frontConv) return TL0 - liquidusDrop*(D-frontConv*dx)/D;
+    if(x > frontConv) return TL0 - liquidusDrop*(D-frontConv*dx)/D - liquidEnrichment*gradTL;
 
     return T - P[x]*liquidusDrop*dx/D;
 }
@@ -213,6 +227,7 @@ double Simulation::getCrystallizationFront(void)
 		lastBdy = i;
 	}
 	
+	if (i == int(CMB/dx) and P[i] == 1.) { bdyMoved = 1; endProg = true; }
     if (i == XR) { return i;}
     return i + (1-P[i]);
 }
@@ -357,6 +372,7 @@ void Simulation::iterate(double time)
         P[x] = getP(x);
 		S0 = S[x];
         S[x] = getS(x);
+		assert(! isnan(S[x]));
 		// artificial change of liquidus with time needs to be taken into
 		// account to keep energy balance consistent
         nQsec += 4*PI*pow(RC+x*dx,2)*dx*(S0-S[x])*C*(1-P[x]); // J
@@ -378,6 +394,7 @@ void Simulation::initialize()
     S=(double*)malloc(XR*sizeof(double));
     
     Tcore = TL0 + dT0*D/1000.; // 1 K / km of initial gradient
+	liquidEnrichment = 0;
 
     frontCryst = XR; //getCrystallizationFront();
     frontConv = XR; //getConvectiveFront(frontCryst);
@@ -417,7 +434,7 @@ void Simulation::run()
     double oldtime = 0;
     int lastOut = 0;
     
-    while (time < tmax and frontCryst >= frontConv)
+    while (time < tmax and frontCryst >= frontConv and endProg != true)
     {
         iterate(time);
         updateHeat();
