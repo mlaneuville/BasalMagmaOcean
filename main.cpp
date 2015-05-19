@@ -62,6 +62,7 @@ bool finished = false;
 int lastBdy = 100000;
 int bdyMoved = 1;
 bool endProg = false;
+bool convective = true;
 
 string fname1, fname2, fname3;
 
@@ -95,7 +96,7 @@ double Simulation::getS(int x)
 
 	if(x < int(CMB/dx)) return 0.0;
 
-	if(frontConv == int(CMB/dx) and x == 0) // this should be done only once per timestep
+	if(frontConv == int(CMB/dx) and x == XR-1) // this should be done only once per timestep
 	{
 		dc = 3*pow(RC+frontCryst*dx,2)*eta*(oldCryst-frontCryst)*dx;
 		dc /= (pow(RC+frontCryst*dx,3)-pow(RC+frontConv*dx,3));
@@ -107,6 +108,7 @@ double Simulation::getS(int x)
     if(x*dx >= D) return 9999; 
 
 	// the convection zone has the same liquidus as its lowermost point
+    if(x > frontConv and convective) return TL0 - liquidEnrichment*gradTL;
     if(x > frontConv) return TL0 - liquidusDrop*(D-frontConv*dx)/D - liquidEnrichment*gradTL;
 
     return T - P[x]*liquidusDrop*dx/D;
@@ -193,7 +195,7 @@ double Simulation::getConvectiveFront(double x)
 // x is the floating index corresponding to frontCryst
 // here we need to find r such that g(r) = x*dx + RC
 {
-    if (finished == true) return int(CMB/dx);
+    if (finished == true or convective) return int(CMB/dx);
     double target = RC+x*dx;
     double r = target;
     
@@ -358,6 +360,8 @@ void Simulation::iterate(double time)
     frontCryst = getCrystallizationFront();
     oldConv = frontConv;
     frontConv = getConvectiveFront(frontCryst);
+
+	if (time == 0) { oldCryst = frontCryst; oldConv = frontConv; }
     
     assert(! isnan(frontCryst));
     assert(! isnan(frontConv));
