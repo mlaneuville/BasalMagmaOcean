@@ -544,6 +544,8 @@ int main(int argc, char **argv)
 	str << "D" << D/1000 << "L" << liquidusDrop << "R" << densityDrop;
 	string prepend = str.str();
 
+	if(convective) prepend = prepend + string("-conv");
+
     fname1 = prepend + string(".log");
     fname2 = prepend + string("-record.txt");
     fname3 = prepend + string("-timeseries.txt");
