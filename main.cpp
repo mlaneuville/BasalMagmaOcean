@@ -62,7 +62,7 @@ bool finished = false;
 int lastBdy = 100000;
 int bdyMoved = 1;
 bool endProg = false;
-bool convective = true;
+bool convective = false;
 
 string fname1, fname2, fname3;
 
@@ -92,6 +92,7 @@ double Simulation::getS(int x)
 {
     double T = TL0 - liquidusDrop*(D-x*dx)/D;
 	double gradTL = 1000; // K between c=0 and c=1 (assumption for test purposes, check later)
+	if (convective) gradTL = 2000;
 	double dc = 0.0;
 
 	if(x < int(CMB/dx)) return 0.0;
@@ -531,12 +532,13 @@ void Simulation::printInfo(void)
 
 int main(int argc, char **argv)
 {
-    if (argc != 4) {cout << "Wrong number of arguments!" << endl; exit(1);}
+    if (argc != 5) {cout << "Wrong number of arguments!" << endl; exit(1);}
 
 	D = atof(argv[1])*1000;
 	liquidusDrop = atof(argv[2]);
 	densityDrop = atof(argv[3]);
 	XR = (D+delta)/dx;
+	if (atoi(argv[4]) == 1) convective = true;
 
 	ostringstream str; 
 	str << "D" << D/1000 << "L" << liquidusDrop << "R" << densityDrop;
