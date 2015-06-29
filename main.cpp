@@ -91,7 +91,7 @@ double Simulation::getS(int x)
 // returns solidus temperature at cell x
 {
     double T = TL0 - liquidusDrop*(D-x*dx)/D;
-	double gradTL = 1000; // K between c=0 and c=1 (assumption for test purposes, check later)
+	double gradTL = 2000; // K between c=0 and c=1 (assumption for test purposes, check later)
 	if (convective) gradTL = 2000;
 	double dc = 0.0;
 
@@ -109,8 +109,8 @@ double Simulation::getS(int x)
     if(x*dx >= D) return 9999; 
 
 	// the convection zone has the same liquidus as its lowermost point
-    if(x > frontConv and convective) return TL0 - liquidEnrichment*gradTL;
-    if(x > frontConv) return TL0 - liquidusDrop*(D-frontConv*dx)/D - liquidEnrichment*gradTL;
+    if(x >= frontConv and convective) return TL0 - liquidEnrichment*gradTL;
+    if(x >= frontConv) return TL0 - liquidusDrop*(D-frontConv*dx)/D - liquidEnrichment*gradTL;
 
     return T - P[x]*liquidusDrop*dx/D;
 }
@@ -453,7 +453,7 @@ void Simulation::run()
             if (time == 0) time = 1;
 
             FILE *g = fopen(fname3.c_str(), "a");
-            fprintf(g, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g\n",
+            fprintf(g, "%.9g %.9g %.9g %.9g %.9g %.9g %.9g %.9g %.3e\n",
                     time/Ma,
                     (RC+dx*frontCryst)/1e3,
                     (RC+dx*frontConv)/1e3,
@@ -461,7 +461,8 @@ void Simulation::run()
                     Qtop/(time-lastTime)/1e12,
                     (oQsec-nQsec)/(time-oldtime)/1e12,
                     (oQlat-nQlat)/(time-oldtime)/1e12,
-                    getRadio(time)*massBMO/1e12);
+                    getRadio(time)*massBMO/1e12,
+					liquidEnrichment);
             fclose(g);
             lastTime = time;
             oldtime = time;
