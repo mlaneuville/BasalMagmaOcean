@@ -545,7 +545,7 @@ int main(int argc, char **argv)
 	if (atoi(argv[3]) == 1) convective = true;
 
 	ostringstream str; 
-	str << "D" << D/1000; //<< "L" << liquidusDrop << "R" << densityDrop;
+	str << "D" << D/1000 << "G" << int(compoGradient*1e7); //<< "L" << liquidusDrop << "R" << densityDrop;
 	string prepend = str.str();
 
 	if(convective) prepend = prepend + string("-conv");

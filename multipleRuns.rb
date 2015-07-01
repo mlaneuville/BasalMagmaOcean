@@ -6,14 +6,14 @@ $maxRuns = 8
 $running = 0
 $rCount = 0
 
-thickness = [200, 300, 400, 500, 600]
-liquidusDrop = [500, 1000]
-densityDrop = [500, 1000]
+thickness = [100, 200, 300, 400, 500, 600]
+convective = [0, 1]
+densityGradient = [3e-7, 4e-7, 5e-7]
 
-runs = thickness.product(liquidusDrop, densityDrop)
+runs = thickness.product(convective, densityGradient)
 
-def start(d, l, r)
-	cmd = "./" + $exe + " #{d} #{l} #{r} 0"
+def start(d, g, c)
+	cmd = "./" + $exe + " #{d} #{g} #{c}"
 	pid = fork do
 		exec cmd
 	end
@@ -28,7 +28,7 @@ while 1 do
 		x = runs[$rCount][0]
 		y = runs[$rCount][1]
 		z = runs[$rCount][2]
-		pids << start(x, y, z)
+		pids << start(x, z, y)
 		$rCount += 1
 	else
 		pid = wait()
