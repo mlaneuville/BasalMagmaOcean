@@ -255,7 +255,7 @@ void Simulation::getHeatContent(void)
     
     for(int i=0; i<XR; i++)
     {
-        double stability = 0.5*(gradTF(i)+gradTB(i))*alpha*rho - densityDrop/D*dx;
+        double stability = 0.5*(gradTF(i)+gradTB(i))*alpha*rho - compoGradient*drho*dx;
         if (stability > 0 and i < frontCryst)
         {
             ofstream logfile;
