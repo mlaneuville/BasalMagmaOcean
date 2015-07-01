@@ -52,8 +52,8 @@ public:
 
 // default
 double D = 4000e3;
-double densityDrop = 1000;
-double liquidusDrop = 1000;
+double liquidusDrop = 0;
+double compoGradient = 0;
 
 int XR = (D+delta)/dx;
 
@@ -148,7 +148,7 @@ double Simulation::func(double r)
 // this is derived analytically (cf. manuscript)
 // and is inverted to get frontConv knowing frontCryst.
 {
-    double s = densityDrop/drho/D; // [wt.%/m]
+    double s = compoGradient; //densityDrop/drho/D; // [wt.%/m]
     double B = eta/s;
     double rtop = RC + D;
     double u, g;
@@ -520,8 +520,7 @@ void Simulation::printInfo(void)
     logfile << "C = " << C << endl;
     logfile << "alpha = " << alpha << endl;
     logfile << "g = " << g << endl;
-    logfile << "drho = " << drho << endl;
-    logfile << "densityDrop = " << densityDrop << endl;
+    logfile << "compoGradient = " << compoGradient << endl;
     logfile << "liquidusDrop = " << liquidusDrop << endl;
     logfile << "eta = " << eta << endl;
     logfile << "dT0 = " << dT0 << endl;
@@ -533,16 +532,21 @@ void Simulation::printInfo(void)
 
 int main(int argc, char **argv)
 {
-    if (argc != 5) {cout << "Wrong number of arguments!" << endl; exit(1);}
+    if (argc != 4) {cout << "Wrong number of arguments!" << endl; exit(1);}
 
 	D = atof(argv[1])*1000;
-	liquidusDrop = atof(argv[2]);
-	densityDrop = atof(argv[3]);
+    compoGradient = atof(argv[2]); // in wt.%/m
+
+    assert(compoGradient > 0);
+    assert(compoGradient*D <= 0.5);
+
+    liquidusDrop = 2000*compoGradient*D;
+
 	XR = (D+delta)/dx;
-	if (atoi(argv[4]) == 1) convective = true;
+	if (atoi(argv[3]) == 1) convective = true;
 
 	ostringstream str; 
-	str << "D" << D/1000 << "L" << liquidusDrop << "R" << densityDrop;
+	str << "D" << D/1000; //<< "L" << liquidusDrop << "R" << densityDrop;
 	string prepend = str.str();
 
 	if(convective) prepend = prepend + string("-conv");
