@@ -54,6 +54,7 @@ public:
 double D = 4000e3;
 double liquidusDrop = 0;
 double compoGradient = 0;
+double gradTL = 2000;
 
 int XR = (D+delta)/dx;
 
@@ -91,8 +92,6 @@ double Simulation::getS(int x)
 // returns solidus temperature at cell x
 {
     double T = TL0 - liquidusDrop*(D-x*dx)/D;
-	double gradTL = 2000; // K between c=0 and c=1 (assumption for test purposes, check later)
-	if (convective) gradTL = 2000;
 	double dc = 0.0;
 
 	if(x < int(CMB/dx)) return 0.0;
@@ -540,7 +539,7 @@ int main(int argc, char **argv)
     assert(compoGradient > 0);
     assert(compoGradient*D <= 0.5);
 
-    liquidusDrop = 2000*compoGradient*D;
+    liquidusDrop = gradTL*compoGradient*D;
 
 	XR = (D+delta)/dx;
 	if (atoi(argv[3]) == 1) convective = true;
