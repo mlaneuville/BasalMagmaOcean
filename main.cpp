@@ -55,6 +55,7 @@ double D = 4000e3;
 double liquidusDrop = 0;
 double compoGradient = 0;
 double gradTL = 2000;
+double heatPartitioning = 1;
 
 int XR = (D+delta)/dx;
 
@@ -85,7 +86,7 @@ double Simulation::getRadio(double time)
 	{
 		prefactor = (pow(RC+D,3)-pow(RC,3))/(pow(RC+frontCryst*dx,3)-pow(RC,3));
 	}
-    return prefactor*H;
+    return heatPartitioning*prefactor*H;
 }
 
 double Simulation::getS(int x)
@@ -521,6 +522,7 @@ void Simulation::printInfo(void)
     logfile << "g = " << g << endl;
     logfile << "compoGradient = " << compoGradient << endl;
     logfile << "liquidusDrop = " << liquidusDrop << endl;
+    logfile << "heatPartitioning = " << heatPartitioning << endl;
     logfile << "eta = " << eta << endl;
     logfile << "dT0 = " << dT0 << endl;
     logfile << "TMantle = " << TMantle << endl;
@@ -531,9 +533,11 @@ void Simulation::printInfo(void)
 
 int main(int argc, char **argv)
 {
-    if (argc != 4) {cout << "Wrong number of arguments!" << endl; exit(1);}
+    if (argc != 5) {cout << "Wrong number of arguments!" << endl; exit(1);}
 
 	D = atof(argv[1])*1000;
+    XR = (D+delta)/dx;
+
     compoGradient = atof(argv[2]); // in wt.%/m
 
     assert(compoGradient > 0);
@@ -541,11 +545,12 @@ int main(int argc, char **argv)
 
     liquidusDrop = gradTL*compoGradient*D;
 
-	XR = (D+delta)/dx;
-	if (atoi(argv[3]) == 1) convective = true;
+    heatPartitioning *= atof(argv[3])/100.;
+	
+    if (atoi(argv[4]) == 1) convective = true;
 
 	ostringstream str; 
-	str << "D" << D/1000 << "G" << int(compoGradient*1e7); //<< "L" << liquidusDrop << "R" << densityDrop;
+	str << "D" << D/1000 << "G" << int(compoGradient*1e7) << "H" << atoi(argv[3]);
 	string prepend = str.str();
 
 	if(convective) prepend = prepend + string("-conv");
