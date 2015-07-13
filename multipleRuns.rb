@@ -2,18 +2,18 @@
 include Process
 
 $exe = "a.out"
-$maxRuns = 8
+$maxRuns = 6
 $running = 0
 $rCount = 0
 
-thickness = [100, 200, 300, 400, 500, 600]
-convective = [0, 1]
+thickness = [200, 400, 600]
+convective = [0]
 densityGradient = [3e-7, 4e-7, 5e-7]
 
 runs = thickness.product(convective, densityGradient)
 
 def start(d, g, c)
-	cmd = "./" + $exe + " #{d} #{g} #{c}"
+	cmd = "./" + $exe + " #{d} #{g} 100 #{c}"
 	pid = fork do
 		exec cmd
 	end
