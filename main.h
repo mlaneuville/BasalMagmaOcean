@@ -46,7 +46,8 @@ static const double dt = 0.25*dx*dx/KTC; // simulation timestep [s]
 // initial conditions
 static const bool conserveHeat = true;
 static const double dT0 = 1.; // initial temperature gradient in BMO [K/km]
-static const double TMantle = 2500; // initial mantle temperature [K]
+static const double dTc = 200.; // initial core overheat [K/km]
+static const double TMantle = 3000; // initial mantle temperature [K]
 static const double TL0 = 4500.; // liquidus at the top of the layer [K]
 //static const double liquidusDrop = 1000.; // total liquidus drop over the layer [K]
 

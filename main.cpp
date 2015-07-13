@@ -398,7 +398,7 @@ void Simulation::initialize()
     P=(double*)malloc(XR*sizeof(double));
     S=(double*)malloc(XR*sizeof(double));
     
-    Tcore = TL0 + dT0*D/1000.; // 1 K / km of initial gradient
+    Tcore = TL0 + dT0*D/1000. + dTc; // 1 K / km of initial gradient
 	liquidEnrichment = 0;
 
     frontCryst = XR; //getCrystallizationFront();
