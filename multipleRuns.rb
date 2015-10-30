@@ -13,7 +13,7 @@ densityGradient = [3e-7, 4e-7, 5e-7]
 runs = thickness.product(convective, densityGradient)
 
 def start(d, g, c)
-	cmd = "./" + $exe + " #{d} #{g} 100 #{c}"
+	cmd = "./" + $exe + " #{d} #{g} 100 #{c} 2500 0"
 	pid = fork do
 		exec cmd
 	end
