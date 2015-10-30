@@ -56,6 +56,8 @@ double liquidusDrop = 0;
 double compoGradient = 0;
 double gradTL = 2000;
 double heatPartitioning = 1;
+double TMantle = 2500;
+double dTc = 0;
 
 int XR = (D+delta)/dx;
 
@@ -527,13 +529,19 @@ void Simulation::printInfo(void)
     logfile << "dT0 = " << dT0 << endl;
     logfile << "TMantle = " << TMantle << endl;
     logfile << "TL0 = " << TL0 << endl;
+	logfile << "dTc = " << dTc << endl;
+	logfile << endl;
     
     logfile.close();
 }
 
 int main(int argc, char **argv)
 {
-    if (argc != 5) {cout << "Wrong number of arguments!" << endl; exit(1);}
+	// the argument list is as follow:
+	// ./exe thickness gradient heat conv mantle core
+	// ./exe 400 4e-7 100 0 2500 0 is a typical example
+
+    if (argc != 7) {cout << "Wrong number of arguments!" << endl; exit(1);}
 
 	D = atof(argv[1])*1000;
     XR = (D+delta)/dx;
@@ -548,6 +556,8 @@ int main(int argc, char **argv)
     heatPartitioning *= atof(argv[3])/100.;
 	
     if (atoi(argv[4]) == 1) convective = true;
+	TMantle = atof(argv[5]);
+	dTc = atof(argv[6]);
 
 	ostringstream str; 
 	str << "D" << D/1000 << "G" << int(compoGradient*1e7) << "H" << atoi(argv[3]);
